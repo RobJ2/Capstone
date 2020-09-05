@@ -9,6 +9,7 @@ stage('Security Scan') {
               steps { 
                  aquaMicroscanner imageName: '04193007/capstone', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
               }
-        } 
+            } 
+        }
     }
 }
