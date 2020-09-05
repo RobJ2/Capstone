@@ -25,6 +25,7 @@ pipeline {
                   withDockerRegistry([url: "", credentialsId: "dockerhub"]) {
                       sh "docker tag 04193007/cloudcapstone"
                       sh 'docker push '04193007/capstone'
+                    '''
                 }
             }
         }
