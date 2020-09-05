@@ -6,28 +6,46 @@ pipeline {
                 sh 'tidy -q -e *.html'
             }
         } 
-         stage('Lint Dockerfile') {
+        stage('Build the Docker image') {
             steps {
-                script {
-                    docker.image('hadolint/hadolint:latest-debian').inside() {
-                            sh 'hadolint ./Dockerfile | tee -a hadolint_lint.txt'
-                            sh '''
-                                lintErrors=$(stat --printf="%s"  hadolint_lint.txt)
-                                if [ "$lintErrors" -gt "0" ]; then
-                                    echo "Errors have been found, please see below"
-                                    cat hadolint_lint.txt
-                                    exit 1
-                                else
-                                    echo "There are no errors found in the Dockerfile!!"
-                                fi
-                            '''
-        
-        stage('Security Scan') {
-            steps { 
-                 aquaMicroscanner imageName: 'node:12.13.1-stretch-slim', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
-              }
-         }    
-                    }
+                withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+                    sh '''
+                        docker build --tag=04193007/capstone .
+                    '''
                 }
             }
         }
+        stage('Security Testing with Aqua') {
+            steps { 
+                aquaMicroscanner imageName: '04193007/cloudcapstone', notCompliesCmd: 'exit 1', onDisallowed: 'fail', outputFormat: 'html'
+            }
+        }
+         stage('Push Docker Image') {
+              steps {
+                  withDockerRegistry([url: "", credentialsId: "dockerhub"]) {
+                      sh "docker tag 04193007/cloudcapstone"
+                      sh 'docker push '04193007/capstone'
+                }
+            }
+        }
+        stage('Create a configuration file for kubectl cluster') {
+            steps {
+                withAWS(region:'eu-central-1',credentials:'aws-static') {
+                    sh '''
+                        aws eks --region eu-central-1 update-kubeconfig --name capstonecluster
+                    '''
+                }
+            }
+        }
+        stage('Set current kubctl context to the cluster') {
+            steps {
+                withAWS(region:'eu-central-1',credentials:'aws-static') {
+                    sh '''
+                        kubectl config use-context arn:aws:eks:eu-central-1:560030635442:cluster/capstonecluster
+                    '''
+                }
+            }
+        }
+
+    }
+}
