@@ -4,6 +4,7 @@ pipeline{
 	environment {
 		registry = "04193007/capstone"
 		registryCredential = 'dockerhub'
+	}
 	
 	stages {
 		stage('Lint HTML'){
