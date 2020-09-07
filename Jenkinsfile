@@ -12,7 +12,7 @@ pipeline{
 	    stage('Build Image'){
 	        steps withAWS(credentials: 'aws-credentials', region: 'eu-central-1') {
 	            sh '''
-		        docker build -t 04193007/capstone .
+		        sudo docker build --tag=04193007/capstone .
 		        '''
 	            }
             }
