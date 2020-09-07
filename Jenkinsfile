@@ -14,5 +14,8 @@ pipeline{
 	            sh '''
 		        docker build -t 04193007/capstone .
 		        '''
-	}
+	            }
+            }
+        }
+    }
 }
