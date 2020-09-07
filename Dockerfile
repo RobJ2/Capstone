@@ -5,7 +5,7 @@ MAINTAINER = "jacobs.rob60@hotmail.com"
 
 COPY index.html /var/www/html/
 
-RUN usermod -a -G docker jenkins
+RUN sudo usermod -a -G docker jenkins
 USER jenkins
 
 EXPOSE 80
