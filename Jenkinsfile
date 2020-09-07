@@ -1,12 +1,12 @@
 pipeline {
-  agent any
+    agent any
     stages {
-       stage('Lint HTML'){
-           steps{
-             echo 'hello world'   
-             script {tidy -q -e index.html}
-           }   
-       }
+        stage('Linting') {
+            steps {
+                    sh 'tidy -q -e *.html'
+                '''
+                }
+            }
+        }
     }
-  }
 }
