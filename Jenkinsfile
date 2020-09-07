@@ -10,7 +10,7 @@ pipeline{
 			}
 		}
 	    stage('Build Image'){
-	        steps {withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD']]){
+	        steps withAWS(credentials: 'aws-credentials', region: 'eu-central-1') {
 	            sh '''
 		        docker build -t 04193007/capstone .
 		        '''
