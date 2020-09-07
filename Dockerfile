@@ -3,8 +3,6 @@ FROM node:latest
 LABEL maintainer="Rob Jacobs <jacobs.rob60@hotmail.com>"
 MAINTAINER = "jacobs.rob60@hotmail.com"
 
-WORKDIR /app
-
 COPY index.html /var/www/html/
 
 EXPOSE 80
