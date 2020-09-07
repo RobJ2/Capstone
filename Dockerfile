@@ -5,5 +5,8 @@ MAINTAINER = "jacobs.rob60@hotmail.com"
 
 COPY index.html /var/www/html/
 
+RUN usermod -a -G docker jenkins
+USER jenkins
+
 EXPOSE 80
 CMD ["nginx", "-g" , "daemon off;"]
